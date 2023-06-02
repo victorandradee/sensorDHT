@@ -10,10 +10,10 @@ const char SSIDPass[] = "";
 const char BrokerURL[] = "broker.hivemq.com";
 const char BrokerUserName[] = "";
 const char BrokerPassword[] = "";
-const char MQTTClientName[] = "SensorDHT22-02";
+const char MQTTClientName[] = "SensorDHT22-01";
 const int BrokerPort = 1883;
 const int JSON_BUFFER_SIZE = JSON_OBJECT_SIZE(3) + 20;
-const char Location[] = "Madrid";
+const char Location[] = "São Paulo";
 
 // Variáveis globais
 DHTesp dhtSensor;
