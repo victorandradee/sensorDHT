@@ -1,0 +1,149 @@
+[
+    {
+        "id": "d055cb79bd275a06",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "01bf9d22315bdfe8",
+        "type": "mqtt in",
+        "z": "d055cb79bd275a06",
+        "name": "Hive MQ Broker",
+        "topic": "dht/temp",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "2fe64de9f05b3135",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 160,
+        "y": 200,
+        "wires": [
+            [
+                "8469d20100e21585",
+                "fcb30e988b990c5b"
+            ]
+        ]
+    },
+    {
+        "id": "fcb30e988b990c5b",
+        "type": "function",
+        "z": "d055cb79bd275a06",
+        "name": "message",
+        "func": "const { temp, location, source } = msg.payload\nconst round = (temp) => Math.round(temp)\nmsg.payload = `${round(temp)}°C, ${location}.\\n_(via ${source})_`\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 260,
+        "wires": [
+            [
+                "aa855f4aac4072cb"
+            ]
+        ]
+    },
+    {
+        "id": "3f8ca026adebdae2",
+        "type": "influxdb out",
+        "z": "d055cb79bd275a06",
+        "influxdb": "799e44d1d9ff54f8",
+        "name": "InfluxDB",
+        "measurement": "temp",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "TheWeatherMeter",
+        "bucket": "dht",
+        "x": 600,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "8469d20100e21585",
+        "type": "function",
+        "z": "d055cb79bd275a06",
+        "name": "write",
+        "func": "const { temp, source, location } = msg.payload\nmsg.payload = [{ temp }, { source, location }];\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 140,
+        "wires": [
+            [
+                "3f8ca026adebdae2"
+            ]
+        ]
+    },
+    {
+        "id": "aa855f4aac4072cb",
+        "type": "node-red-contrib-whatsapp-cmb-send-message",
+        "z": "d055cb79bd275a06",
+        "name": "Send Message",
+        "account": "f76ee35edcb7320e",
+        "text": "payload",
+        "inputtypemessage": "msg",
+        "rejectssl": false,
+        "x": 620,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2fe64de9f05b3135",
+        "type": "mqtt-broker",
+        "name": "HiveMQ Broker",
+        "broker": "broker.hivemq.com",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "799e44d1d9ff54f8",
+        "type": "influxdb",
+        "hostname": "127.0.0.1",
+        "port": "8086",
+        "protocol": "http",
+        "database": "database",
+        "name": "InfluxDB Cloud",
+        "usetls": false,
+        "tls": "",
+        "influxdbVersion": "2.0",
+        "url": "https://us-east-1-1.aws.cloud2.influxdata.com",
+        "rejectUnauthorized": true
+    },
+    {
+        "id": "f76ee35edcb7320e",
+        "type": "node-red-contrib-whatsapp-cmb-account",
+        "name": "Celular Enzo"
+    }
+]
